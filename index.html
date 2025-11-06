@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YouTube Auto Player v2.5 - Auto Retry Mechanism</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#c31432 0%,#240b36 100%);min-height:100vh;display:flex;flex-direction:column}.top-container{background:#fff;border-radius:0 0 30px 30px;box-shadow:0 10px 40px rgba(0,0,0,.3);padding:30px;max-width:1200px;width:100%;margin:0 auto;will-change:transform}h1{color:#333;margin-bottom:10px;text-align:center;font-size:28px;display:flex;align-items:center;justify-content:center;gap:10px}.youtube-logo{color:#f00;font-size:32px}.subtitle{text-align:center;color:#666;margin-bottom:25px;font-size:14px}.instruction-box,.success-box{border-radius:10px;padding:15px;margin-bottom:20px;font-size:13px}.instruction-box{background:#e3f2fd;border:1px solid #2196f3;color:#1565c0}.instruction-box strong{display:block;margin-bottom:8px;font-size:14px}.success-box{background:#ffebee;border:1px solid #f44336;color:#c62828;text-align:center;font-weight:600;font-size:14px}label{display:block;margin-bottom:8px;color:#555;font-weight:500;font-size:14px}label.disabled{color:#999}input[type=text],input[type=number],input[type=time]{width:100%;padding:12px 15px;border:2px solid #e0e0e0;border-radius:10px;font-size:14px;transition:border-color .3s}input[type=text]:focus,input[type=number]:focus,input[type=time]:focus{outline:0;border-color:#f44336}input[type=text]:disabled,input[type=number]:disabled,input[type=time]:disabled{background-color:#f5f5f5;color:#999;cursor:not-allowed;border-color:#e0e0e0}.url-input-container{margin-bottom:20px}.url-input-group{display:flex;gap:10px;margin-bottom:10px}.url-input-group input{flex:1}.btn-add{padding:12px 20px;background:#f00;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600;transition:all .3s;white-space:nowrap}.btn-add:hover:not(:disabled){background:#c00;transform:translateY(-2px)}.btn-add:disabled{background:#ccc;cursor:not-allowed}.backup-section{background:#fff3e0;border:2px solid #ff9800;border-radius:10px;padding:15px;margin-bottom:20px}.backup-header{font-weight:600;font-size:16px;color:#e65100;margin-bottom:10px;display:flex;align-items:center;gap:8px}.backup-buttons{display:flex;gap:10px}.btn-backup{padding:10px 15px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;transition:all .3s}.btn-export{background:#4caf50;color:#fff}.btn-export:hover{background:#45a049}.btn-import{background:#2196f3;color:#fff}.btn-import:hover{background:#1976d2}#importFile{display:none}.video-list{max-height:200px;overflow-y:auto;border:2px solid #e0e0e0;border-radius:10px;padding:10px;background:#f9f9f9;contain:layout style paint}.video-item{display:flex;align-items:center;gap:12px;padding:10px;margin-bottom:8px;background:#fff;border-radius:8px;border:1px solid #e0e0e0;transition:all .3s;will-change:transform,background-color}.video-item:hover{background:#fff3e0;border-color:#ff9800;transform:translateX(4px)}.video-item.playing{background:#ffebee;border-color:#f44336;border-width:2px;box-shadow:0 4px 12px rgba(244,67,54,.3)}.video-thumbnail{width:80px;height:45px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#f0f0f0;border:1px solid #ddd}.video-thumbnail svg{width:24px;height:24px;opacity:.5}.video-info{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}.video-title{font-weight:600;color:#333;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.video-id{color:#999;font-size:12px;font-family:monospace}.video-type-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin-right:6px}.badge-video{background:#e3f2fd;color:#1976d2}.badge-playlist{background:#f3e5f5;color:#7b1fa2}.badge-playing{background:#ffebee;color:#c62828;animation:pulse 2s infinite}.video-item button{padding:6px 12px;background:#f44336;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;flex-shrink:0;margin-left:4px}.video-item button:hover:not(:disabled){background:#d32f2f}.video-item button:disabled{background:#ccc;cursor:not-allowed}.time-settings{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;margin-bottom:20px}.random-interval-section,.quiet-hours-section{border-radius:10px;padding:15px;margin-bottom:20px}.random-interval-section{background:#e8f5e9;border:2px solid #4caf50}.quiet-hours-section{background:#fff3e0;border:2px solid #ff9800}.random-interval-header,.quiet-hours-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.random-interval-title,.quiet-hours-title{font-weight:600;font-size:16px;display:flex;align-items:center;gap:8px}.random-interval-title{color:#2e7d32}.quiet-hours-title{color:#e65100}.random-interval-toggle,.quiet-hours-toggle{display:flex;align-items:center;gap:8px}.random-interval-inputs,.quiet-hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.time-input-group{display:flex;flex-direction:column;gap:8px}.interval-note,.quiet-status{background:#fff;padding:10px;border-radius:8px;text-align:center;font-size:12px;margin-top:10px;font-weight:600}.interval-note{color:#2e7d32}.quiet-status{color:#e65100;font-size:13px}.quiet-status.active{background:#ffcdd2;color:#c62828}.quiet-status.inactive{background:#c8e6c9;color:#2e7d32}.checkbox-group{display:flex;gap:20px;margin-bottom:20px;align-items:center;flex-wrap:wrap}.checkbox-item{display:flex;align-items:center;gap:8px}input[type=checkbox]{width:18px;height:18px;cursor:pointer}.checkbox-item label{margin:0;cursor:pointer;font-size:14px}.button-group{display:flex;gap:10px;margin-bottom:20px}button{flex:1;padding:12px 20px;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:all .3s}.btn-start{background:linear-gradient(135deg,#f00 0%,#c00 100%);color:#fff}.btn-start:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 20px rgba(255,0,0,.3)}.btn-stop{background:#616161;color:#fff}.btn-stop:hover:not(:disabled){background:#424242;transform:translateY(-2px)}.btn-test{background:#4caf50;color:#fff}.btn-test:hover:not(:disabled){background:#45a049;transform:translateY(-2px)}button:disabled{background:#ccc;cursor:not-allowed;opacity:.6}.status-container{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}.status-box{background:#f5f5f5;border-radius:10px;padding:15px}.status-title{font-weight:600;color:#333;margin-bottom:10px;font-size:14px;text-transform:uppercase}.status-item{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px}.status-label{color:#666}.status-value{color:#333;font-weight:600}.countdown{background:linear-gradient(135deg,#f00 0%,#c00 100%);color:#fff;padding:20px;border-radius:15px;text-align:center;font-size:20px;font-weight:700;margin-bottom:20px}.video-container{background:#1a1a1a;border-radius:30px 30px 0 0;padding:20px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:450px;box-shadow:0 -10px 40px rgba(0,0,0,.3)}.video-wrapper{width:100%;max-width:900px;aspect-ratio:16/9;background:#000;border-radius:15px;overflow:hidden;position:relative;contain:layout style paint}.video-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#666}.video-placeholder svg{width:80px;height:80px;margin-bottom:20px;opacity:.5}#youtubePlayer{width:100%;height:100%;border:none}.log{background:#1e1e1e;color:#0f0;padding:12px;border-radius:10px;font-family:monospace;font-size:12px;height:120px;overflow-y:auto;contain:layout style paint}.log-entry{margin-bottom:4px}.log-time{color:#888}.log-message{color:#0f0}.log-error{color:#ff5252}.log-warning{color:#ffa726}.log-success{color:#66bb6a}.log-info{color:#42a5f5}@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:.8}}@media (max-width:768px){.time-settings,.status-container,.random-interval-inputs,.quiet-hours-grid{grid-template-columns:1fr}.checkbox-group{flex-direction:column;align-items:flex-start}.backup-buttons{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="top-container">
+<h1><span class="youtube-logo">▶️</span>YouTube Auto Player v2.5</h1>
+<p class="subtitle">🔄 Retry Mechanism - ลองเล่นซ้ำอัตโนมัติ 3 ครั้ง - ข้ามวิดีโอที่มีปัญหา</p>
+<div class="instruction-box"><strong>💾 100% Offline Ready:</strong>1. บันทึกหน้านี้ (Ctrl+S) เป็น .html<br>2. เปิดด้วย Browser (Chrome/Edge/Firefox)<br>3. ใช้งานได้เลย! ไม่ต้อง Server</div>
+<div class="success-box">🎬 รองรับ YouTube, YouTube Shorts, Playlist - v2.5 Auto Retry System</div>
+
+<div class="backup-section">
+<div class="backup-header">💾 สำรองและนำเข้าข้อมูล</div>
+<div class="backup-buttons">
+<button class="btn-backup btn-export" id="exportBtn">📤 Export ข้อมูล</button>
+<button class="btn-backup btn-import" id="importBtn">📥 Import ข้อมูล</button>
+</div>
+<input type="file" id="importFile" accept=".json">
+</div>
+
+<div class="url-input-container">
+<label>เพิ่ม YouTube URL และตั้งชื่อ:</label>
+<div class="url-input-group">
+<input type="text" id="urlInput" placeholder="https://www.youtube.com/watch?v=...">
+<input type="text" id="titleInput" placeholder="ชื่อวิดีโอ (ไม่บังคับ)" style="flex:0.6">
+<button class="btn-add" id="addBtn">+ เพิ่ม</button>
+</div>
+<div class="video-list" id="videoList"></div>
+</div>
+
+<div class="time-settings">
+<div class="input-group"><label for="playDuration">เล่นวิดีโอ (นาที):</label><input type="number" id="playDuration" value="5" min="1" max="60"></div>
+<div class="input-group"><label for="interval" id="intervalLabel">รอบการเล่น (นาที):</label><input type="number" id="interval" value="30" min="6"></div>
+<div class="input-group"><label for="startTime">เริ่มที่วินาทีที่:</label><input type="number" id="startTime" value="0" min="0"></div>
+</div>
+
+<div class="random-interval-section">
+<div class="random-interval-header">
+<div class="random-interval-title">🎲 สุ่มช่วงเวลาเล่น</div>
+<div class="random-interval-toggle"><input type="checkbox" id="enableRandomInterval"><label for="enableRandomInterval" style="margin:0">เปิดใช้งาน</label></div>
+</div>
+<div class="random-interval-inputs">
+<div class="input-group"><label for="intervalMin">นาทีต่ำสุด:</label><input type="number" id="intervalMin" value="25" min="6"></div>
+<div class="input-group"><label for="intervalMax">นาทีสูงสุด:</label><input type="number" id="intervalMax" value="35" min="6"></div>
+</div>
+<div class="interval-note" id="intervalNote">💡 เปิดใช้งานเพื่อสุ่มช่วงเวลาเล่น</div>
+</div>
+
+<div class="quiet-hours-section">
+<div class="quiet-hours-header">
+<div class="quiet-hours-title">🌙 ช่วงเวลาห้ามเล่น</div>
+<div class="quiet-hours-toggle"><input type="checkbox" id="enableQuietHours"><label for="enableQuietHours" style="margin:0">เปิดใช้งาน</label></div>
+</div>
+<div class="quiet-hours-grid">
+<div class="time-input-group"><label for="quietStart">เริ่มต้น:</label><input type="time" id="quietStart" value="22:00"></div>
+<div class="time-input-group"><label for="quietEnd">สิ้นสุด:</label><input type="time" id="quietEnd" value="08:00"></div>
+</div>
+<div class="quiet-status" id="quietStatus">⚙️ ปิดการใช้งาน</div>
+</div>
+
+<div class="checkbox-group">
+<div class="checkbox-item"><input type="checkbox" id="autoplay" checked><label for="autoplay">เล่นอัตโนมัติ</label></div>
+<div class="checkbox-item"><input type="checkbox" id="muted" checked><label for="muted">ปิดเสียง</label></div>
+<div class="checkbox-item"><input type="checkbox" id="loop"><label for="loop">เล่นวนซ้ำ</label></div>
+<div class="checkbox-item"><input type="checkbox" id="shuffle"><label for="shuffle">สุ่มลำดับ</label></div>
+</div>
+
+<div class="button-group">
+<button id="startBtn" class="btn-start">▶️ เริ่มเล่น</button>
+<button id="stopBtn" class="btn-stop" disabled>⏹️ หยุด</button>
+<button id="testBtn" class="btn-test">🧪 ทดสอบ</button>
+</div>
+
+<div style="text-align:center;margin-bottom:15px">
+<button id="resetErrorBtn" style="padding:8px 16px;background:#d32f2f;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all .3s" onmouseover="this.style.background='#b71c1c'" onmouseout="this.style.background='#d32f2f'">🔄 รีเซ็ตระบบทั้งหมด</button>
+<small style="display:block;color:#d32f2f;margin-top:5px;font-size:11px;font-weight:600">⚠️ จะลบข้อมูลทั้งหมด (วิดีโอ, การตั้งค่า, ประวัติ)</small>
+</div>
+
+<div class="status-container">
+<div class="status-box">
+<div class="status-title">📊 สถานะการเล่น</div>
+<div class="status-item"><span class="status-label">สถานะ:</span><span id="status" class="status-value">ไม่ทำงาน</span></div>
+<div class="status-item"><span class="status-label">วิดีโอปัจจุบัน:</span><span id="currentVideo" class="status-value">-</span></div>
+<div class="status-item"><span class="status-label">จำนวนครั้งที่เล่น:</span><span id="playCount" class="status-value">0</span></div>
+</div>
+<div class="status-box">
+<div class="status-title">⏱️ เวลา</div>
+<div class="status-item"><span class="status-label">เล่นครั้งล่าสุด:</span><span id="lastPlay" class="status-value">-</span></div>
+<div class="status-item"><span class="status-label">หยุดเล่นเมื่อ:</span><span id="stopTime" class="status-value">-</span></div>
+<div class="status-item"><span class="status-label">เล่นครั้งถัดไป:</span><span id="nextPlay" class="status-value">-</span></div>
+</div>
+</div>
+
+<div class="countdown" id="countdown">⏸️ รอเริ่มการทำงาน...</div>
+<div class="log" id="log"></div>
+</div>
+
+<div class="video-container">
+<div class="video-wrapper">
+<div id="videoPlaceholder" class="video-placeholder">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+<div>รอการเล่นวิดีโอ</div>
+</div>
+<iframe id="youtubePlayer" style="display:none" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+</div>
+
+<script>
+(function(){'use strict';
+const C={dom:{},data:null,timeouts:{main:null,stop:null,countdown:null,retry:null},state:{videos:[],currentIndex:0,playCounter:0,isRunning:false,nextActionTime:null,currentAction:null,errorVideos:{},consecutiveErrors:0,maxConsecutiveErrors:3,retryCount:0,maxRetries:3,currentVideoData:null}};
+const IDs={urlInput:'urlInput',titleInput:'titleInput',addBtn:'addBtn',videoList:'videoList',playDuration:'playDuration',interval:'interval',intervalLabel:'intervalLabel',startTime:'startTime',enableRandomInterval:'enableRandomInterval',intervalMin:'intervalMin',intervalMax:'intervalMax',intervalNote:'intervalNote',enableQuietHours:'enableQuietHours',quietStart:'quietStart',quietEnd:'quietEnd',quietStatus:'quietStatus',autoplay:'autoplay',muted:'muted',loop:'loop',shuffle:'shuffle',startBtn:'startBtn',stopBtn:'stopBtn',testBtn:'testBtn',resetErrorBtn:'resetErrorBtn',status:'status',currentVideo:'currentVideo',playCount:'playCount',lastPlay:'lastPlay',stopTime:'stopTime',nextPlay:'nextPlay',countdown:'countdown',log:'log',youtubePlayer:'youtubePlayer',videoPlaceholder:'videoPlaceholder',exportBtn:'exportBtn',importBtn:'importBtn',importFile:'importFile'};
+
+function cacheDOM(){for(const id in IDs)C.dom[id]=document.getElementById(IDs[id])}
+function debounce(f,w){let t;return function(...a){clearTimeout(t);t=setTimeout(()=>f(...a),w)}}
+function throttle(f,l){let i;return function(...a){if(!i){f.apply(this,a);i=true;setTimeout(()=>i=false,l)}}}
+
+const log=throttle(function(m){const el=C.dom.log;if(!el)return;const t=new Date().toLocaleTimeString('th-TH');const e=document.createElement('div');e.className='log-entry';let cls='log-message';if(m.includes('❌')||m.includes('Error'))cls='log-error';else if(m.includes('⚠️')||m.includes('ข้าม'))cls='log-warning';else if(m.includes('✅')||m.includes('สำเร็จ'))cls='log-success';else if(m.includes('📺')||m.includes('▶️')||m.includes('🎬')||m.includes('🔄'))cls='log-info';e.innerHTML=`<span class="log-time">[${t}]</span> <span class="${cls}">${m}</span>`;el.appendChild(e);el.scrollTop=el.scrollHeight;const es=el.querySelectorAll('.log-entry');if(es.length>50)es[0].remove()},100);
+
+function extractVideoId(u){const p=[/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,/youtube\.com\/shorts\/([^&\n?#]+)/];for(let pt of p){const m=u.match(pt);if(m)return m[1]}return null}
+function extractPlaylistId(u){const m=u.match(/[&?]list=([^&\n?#]+)/);return m?m[1]:null}
+function createVideoIcon(isPlaylist){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke',isPlaylist?'#7b1fa2':'#1976d2');svg.setAttribute('stroke-width','2');const path=document.createElementNS('http://www.w3.org/2000/svg',isPlaylist?'rect':'polygon');if(isPlaylist){path.setAttribute('x','3');path.setAttribute('y','3');path.setAttribute('width','18');path.setAttribute('height','18');path.setAttribute('rx','2')}else{path.setAttribute('points','5 3 19 12 5 21 5 3')}svg.appendChild(path);return svg}
+
+function isVideoHasError(video){if(!video)return false;const key=video.videoId||video.playlistId;return C.state.errorVideos&&C.state.errorVideos[key]?true:false}
+
+const save=debounce(function(){try{const d={videos:C.state.videos,playDuration:parseInt(C.dom.playDuration?.value)||5,interval:parseInt(C.dom.interval?.value)||30,startTime:parseInt(C.dom.startTime?.value)||0,autoplay:C.dom.autoplay?.checked??true,muted:C.dom.muted?.checked??true,loop:C.dom.loop?.checked??false,shuffle:C.dom.shuffle?.checked??false,enableQuietHours:C.dom.enableQuietHours?.checked??false,quietStart:C.dom.quietStart?.value||'22:00',quietEnd:C.dom.quietEnd?.value||'08:00',enableRandomInterval:C.dom.enableRandomInterval?.checked??false,intervalMin:parseInt(C.dom.intervalMin?.value)||25,intervalMax:parseInt(C.dom.intervalMax?.value)||35,errorVideos:C.state.errorVideos};localStorage.setItem('ytAutoPlayer',JSON.stringify(d))}catch(e){console.error('Save:',e)}},500);
+
+function load(){try{const s=localStorage.getItem('ytAutoPlayer');if(!s)return;C.data=JSON.parse(s);C.state.videos=C.data.videos||[];C.state.errorVideos=C.data.errorVideos||{};if(C.dom.playDuration)C.dom.playDuration.value=C.data.playDuration||5;if(C.dom.interval)C.dom.interval.value=C.data.interval||30;if(C.dom.startTime)C.dom.startTime.value=C.data.startTime||0;if(C.dom.autoplay)C.dom.autoplay.checked=C.data.autoplay??true;if(C.dom.muted)C.dom.muted.checked=C.data.muted??true;if(C.dom.loop)C.dom.loop.checked=C.data.loop??false;if(C.dom.shuffle)C.dom.shuffle.checked=C.data.shuffle??false;if(C.dom.enableQuietHours)C.dom.enableQuietHours.checked=C.data.enableQuietHours??false;if(C.dom.quietStart)C.dom.quietStart.value=C.data.quietStart||'22:00';if(C.dom.quietEnd)C.dom.quietEnd.value=C.data.quietEnd||'08:00';if(C.dom.enableRandomInterval)C.dom.enableRandomInterval.checked=C.data.enableRandomInterval??false;if(C.dom.intervalMin)C.dom.intervalMin.value=C.data.intervalMin||25;if(C.dom.intervalMax)C.dom.intervalMax.value=C.data.intervalMax||35;updateVideoList();updateQuietStatus();updateRandomNote();toggleInterval();log('💾 โหลดข้อมูลสำเร็จ')}catch(e){console.error('Load:',e)}}
+
+function exportConfig(){try{const config={version:'2.5',exportDate:new Date().toISOString(),videos:C.state.videos,settings:{playDuration:parseInt(C.dom.playDuration?.value)||5,interval:parseInt(C.dom.interval?.value)||30,startTime:parseInt(C.dom.startTime?.value)||0,autoplay:C.dom.autoplay?.checked??true,muted:C.dom.muted?.checked??true,loop:C.dom.loop?.checked??false,shuffle:C.dom.shuffle?.checked??false,enableQuietHours:C.dom.enableQuietHours?.checked??false,quietStart:C.dom.quietStart?.value||'22:00',quietEnd:C.dom.quietEnd?.value||'08:00',enableRandomInterval:C.dom.enableRandomInterval?.checked??false,intervalMin:parseInt(C.dom.intervalMin?.value)||25,intervalMax:parseInt(C.dom.intervalMax?.value)||35},errorVideos:C.state.errorVideos};const dataStr=JSON.stringify(config,null,2);const blob=new Blob([dataStr],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`youtube-autoplayer-v25-${new Date().toISOString().split('T')[0]}.json`;link.click();URL.revokeObjectURL(url);log('📤 Export สำเร็จ')}catch(e){alert('เกิดข้อผิดพลาดในการ Export: '+e.message);console.error('Export error:',e)}}
+
+function importConfig(file){const reader=new FileReader();reader.onload=function(e){try{const config=JSON.parse(e.target.result);if(!config.videos||!Array.isArray(config.videos)){throw new Error('ไฟล์ไม่ถูกต้อง: ไม่พบข้อมูลวิดีโอ')}const confirmed=confirm(`พบ ${config.videos.length} วิดีโอในไฟล์\nต้องการนำเข้าข้อมูลหรือไม่?\n(ข้อมูลเดิมจะถูกแทนที่)`);if(!confirmed)return;C.state.videos=config.videos;C.state.errorVideos=config.errorVideos||{};if(config.settings){const s=config.settings;if(C.dom.playDuration)C.dom.playDuration.value=s.playDuration||5;if(C.dom.interval)C.dom.interval.value=s.interval||30;if(C.dom.startTime)C.dom.startTime.value=s.startTime||0;if(C.dom.autoplay)C.dom.autoplay.checked=s.autoplay??true;if(C.dom.muted)C.dom.muted.checked=s.muted??true;if(C.dom.loop)C.dom.loop.checked=s.loop??false;if(C.dom.shuffle)C.dom.shuffle.checked=s.shuffle??false;if(C.dom.enableQuietHours)C.dom.enableQuietHours.checked=s.enableQuietHours??false;if(C.dom.quietStart)C.dom.quietStart.value=s.quietStart||'22:00';if(C.dom.quietEnd)C.dom.quietEnd.value=s.quietEnd||'08:00';if(C.dom.enableRandomInterval)C.dom.enableRandomInterval.checked=s.enableRandomInterval??false;if(C.dom.intervalMin)C.dom.intervalMin.value=s.intervalMin||25;if(C.dom.intervalMax)C.dom.intervalMax.value=s.intervalMax||35}updateVideoList();updateQuietStatus();updateRandomNote();toggleInterval();save();log(`📥 Import สำเร็จ: ${config.videos.length} วิดีโอ`);alert(`Import สำเร็จ!\nนำเข้า ${config.videos.length} วิดีโอ`)}catch(e){alert('เกิดข้อผิดพลาดในการ Import: '+e.message);console.error('Import error:',e)}};reader.readAsText(file)}
+
+function addVideo(){const u=C.dom.urlInput?.value?.trim();const t=C.dom.titleInput?.value?.trim();if(!u){alert('กรุณาใส่ YouTube URL');return}const vId=extractVideoId(u);const pId=extractPlaylistId(u);if(!vId&&!pId){alert('URL ไม่ถูกต้อง');return}const title=t||(vId||pId);const vData={url:u,videoId:vId,playlistId:pId,title:title};if(C.state.videos.some(v=>v.url===u)){alert('วิดีโอนี้มีในรายการแล้ว');return}C.state.videos.push(vData);if(C.dom.urlInput)C.dom.urlInput.value='';if(C.dom.titleInput)C.dom.titleInput.value='';updateVideoList();save();log(`➕ เพิ่ม: ${title}`)}
+
+function removeVideo(i){if(i<0||i>=C.state.videos.length)return;const v=C.state.videos[i];C.state.videos.splice(i,1);if(C.state.isRunning&&i<=C.state.currentIndex){C.state.currentIndex=Math.max(0,C.state.currentIndex-1)}updateVideoList();save();log(`➖ ลบ: ${v.title}`)}
+
+const updateVideoList=debounce(function(){const c=C.dom.videoList;if(!c)return;if(C.state.videos.length===0){c.innerHTML='<div style="color:#999;text-align:center;padding:20px">ยังไม่มีวิดีโอในรายการ<br><small>เพิ่มลิงก์ YouTube ด้านบน</small></div>';return}const f=document.createDocumentFragment();C.state.videos.forEach((v,i)=>{const isP=i===C.state.currentIndex&&C.state.isRunning;const hasError=isVideoHasError(v);const d=document.createElement('div');d.className=`video-item${isP?' playing':''}`;if(hasError)d.style.opacity='0.6';const pBadge=isP?'<span class="video-type-badge badge-playing">● กำลังเล่น</span>':'';const errorBadge=hasError?'<span class="video-type-badge" style="background:#ffcdd2;color:#c62828">⚠️ Error</span>':'';const tBadge=v.playlistId?'<span class="video-type-badge badge-playlist">Playlist</span>':'<span class="video-type-badge badge-video">Video</span>';const thumb=document.createElement('div');thumb.className='video-thumbnail';thumb.appendChild(createVideoIcon(!!v.playlistId));const info=v.videoId||v.playlistId||'N/A';const infoDiv=document.createElement('div');infoDiv.className='video-info';infoDiv.innerHTML=`<div class="video-title">${pBadge}${errorBadge}${tBadge}${v.title}</div><div class="video-id">#${i+1} • ${info}</div>`;const btn=document.createElement('button');btn.textContent='ลบ';btn.disabled=C.state.isRunning;btn.onclick=()=>removeVideo(i);d.appendChild(thumb);d.appendChild(infoDiv);d.appendChild(btn);f.appendChild(d)});c.innerHTML='';c.appendChild(f)},50);
+
+window.removeVideo=removeVideo;
+
+function isQuiet(){if(!C.dom.enableQuietHours?.checked)return false;const n=new Date();const ct=n.getHours()*60+n.getMinutes();const qs=C.dom.quietStart?.value?.split(':');const qe=C.dom.quietEnd?.value?.split(':');if(!qs||!qe)return false;const sm=parseInt(qs[0])*60+parseInt(qs[1]);const em=parseInt(qe[0])*60+parseInt(qe[1]);if(sm>em)return ct>=sm||ct<em;else return ct>=sm&&ct<em}
+
+function updateQuietStatus(){const s=C.dom.quietStatus;if(!s)return;if(!C.dom.enableQuietHours?.checked){s.textContent='⚙️ ปิดการใช้งาน';s.className='quiet-status';return}if(isQuiet()){s.textContent='🔕 อยู่ในช่วงเวลาห้ามเล่น';s.className='quiet-status active'}else{s.textContent='✅ สามารถเล่นได้';s.className='quiet-status inactive'}}
+
+function getRandom(){if(!C.dom.enableRandomInterval?.checked)return parseInt(C.dom.interval?.value)||30;const min=parseInt(C.dom.intervalMin?.value)||25;const max=parseInt(C.dom.intervalMax?.value)||35;if(min>=max)return 30;const r=Math.floor(Math.random()*(max-min+1))+min;log(`🎲 สุ่มได้: ${r} นาที (${min}-${max})`);return r}
+
+function updateRandomNote(){const n=C.dom.intervalNote;if(!n)return;if(!C.dom.enableRandomInterval?.checked){n.textContent='💡 เปิดใช้งานเพื่อสุ่มช่วงเวลาเล่น';n.style.color='#2e7d32';return}const min=parseInt(C.dom.intervalMin?.value)||0;const max=parseInt(C.dom.intervalMax?.value)||0;if(isNaN(min)||isNaN(max)){n.textContent='⚠️ กรุณากรอกตัวเลข';n.style.color='#d32f2f';return}if(min>=max){n.textContent='⚠️ ค่าต่ำสุดต้องน้อยกว่าค่าสูงสุด';n.style.color='#d32f2f';return}n.textContent=`🎲 จะสุ่มเวลารอระหว่าง ${min}-${max} นาที`;n.style.color='#2e7d32'}
+
+function toggleInterval(){const e=C.dom.enableRandomInterval?.checked;if(C.dom.interval)C.dom.interval.disabled=!!e;if(C.dom.intervalLabel){C.dom.intervalLabel.textContent=e?'รอบการเล่น (ปิดเพราะใช้การสุ่ม):':'รอบการเล่น (นาที):';e?C.dom.intervalLabel.classList.add('disabled'):C.dom.intervalLabel.classList.remove('disabled')}}
+
+const updateCD=throttle(function(){updateQuietStatus();const cd=C.dom.countdown;if(!cd)return;if(!C.state.nextActionTime||!C.state.isRunning){cd.textContent='⏸️ รอเริ่มการทำงาน...';return}const n=Date.now();const d=C.state.nextActionTime-n;if(d<0){cd.textContent='⚡ กำลังดำเนินการ...';return}const m=Math.floor((d%(1000*60*60))/(1000*60));const s=Math.floor((d%(1000*60))/1000);let a='';if(C.state.currentAction==='stopping')a='⏸️ จะหยุดเล่นใน:';else if(C.state.currentAction==='waiting')a='▶️ เล่นครั้งถัดไปใน:';cd.textContent=`${a} ${m}:${s.toString().padStart(2,'0')}`},1000);
+
+function stopCurrentVideo(){const p=C.dom.youtubePlayer;const ph=C.dom.videoPlaceholder;if(p&&ph){p.src='about:blank';p.style.display='none';ph.style.display='flex'}}
+
+function retryVideo(){if(!C.state.isRunning||!C.state.currentVideoData)return;if(C.state.retryCount>=C.state.maxRetries){log(`❌ ลองเล่นครบ ${C.state.maxRetries} ครั้งแล้ว - ข้ามวิดีโอนี้`);const v=C.state.currentVideoData;const key=v.videoId||v.playlistId;if(!C.state.errorVideos[key]){C.state.errorVideos[key]={error:'retry_failed',msg:`ลองเล่น ${C.state.maxRetries} ครั้งไม่สำเร็จ`,title:v.title,timestamp:new Date().toISOString()};save();updateVideoList()}C.state.retryCount=0;C.state.currentVideoData=null;if(C.timeouts.retry)clearTimeout(C.timeouts.retry);stopCurrentVideo();scheduleNext();return}C.state.retryCount++;log(`🔄 ลองเล่นซ้ำครั้งที่ ${C.state.retryCount}/${C.state.maxRetries}: ${C.state.currentVideoData.title}`);const v=C.state.currentVideoData;const ap=C.dom.autoplay?.checked?1:0;const mu=C.dom.muted?.checked?1:0;const lp=C.dom.loop?.checked?1:0;const st=parseInt(C.dom.startTime?.value)||0;let url='';if(v.playlistId)url=`https://www.youtube-nocookie.com/embed/videoseries?list=${v.playlistId}&autoplay=${ap}&mute=${mu}&loop=${lp}`;else if(v.videoId)url=`https://www.youtube-nocookie.com/embed/${v.videoId}?autoplay=${ap}&mute=${mu}&loop=${lp}&start=${st}&playlist=${v.videoId}`;const p=C.dom.youtubePlayer;if(p){p.src='about:blank';setTimeout(()=>{p.src=url;setupRetryTimer()},500)}}
+function setupRetryTimer(){if(C.timeouts.retry)clearTimeout(C.timeouts.retry);C.timeouts.retry=setTimeout(()=>{if(C.state.isRunning&&C.state.currentVideoData){log(`⚠️ วิดีโอไม่เล่นใน 5 วินาที - เตรียม retry...`);retryVideo()}},5000)}
+function scheduleNext(){if(!C.state.isRunning)return;C.state.retryCount=0;C.state.currentVideoData=null;if(C.timeouts.retry)clearTimeout(C.timeouts.retry);const sh=C.dom.shuffle?.checked??false;if(!sh){C.state.currentIndex=(C.state.currentIndex+1)%C.state.videos.length;log(`⏭️ เตรียมเล่นถัดไป (${C.state.currentIndex+1}/${C.state.videos.length})`)}const pd=(parseInt(C.dom.playDuration?.value)||5)*60*1000;const ni=getRandom();const rt=(ni*60*1000)-pd;if(rt>0&&C.state.isRunning){C.state.currentAction='waiting';C.state.nextActionTime=Date.now()+rt;const nt=new Date(C.state.nextActionTime);if(C.dom.nextPlay)C.dom.nextPlay.textContent=nt.toLocaleTimeString('th-TH');if(C.timeouts.main)clearTimeout(C.timeouts.main);C.timeouts.main=setTimeout(()=>{if(C.state.isRunning){C.state.currentAction=null;play()}},rt)}else if(C.state.isRunning){C.state.currentAction=null;log('⚡ เล่นวิดีโอถัดไปทันที');setTimeout(()=>{if(C.state.isRunning)play()},1000)}updateVideoList()}
+
+function play(){if(C.state.videos.length===0){log('❌ ไม่มีวิดีโอในรายการ');stop();return}if(isQuiet()){log('🔕 อยู่ในช่วงเวลาห้ามเล่น - ข้าม');if(C.dom.status)C.dom.status.textContent='ช่วงเวลาห้ามเล่น';updateQuietStatus();if(C.state.isRunning)C.timeouts.main=setTimeout(()=>play(),60000);return}if(C.state.currentIndex>=C.state.videos.length)C.state.currentIndex=0;const sh=C.dom.shuffle?.checked??false;if(sh&&C.state.currentAction!=='stopping')C.state.currentIndex=Math.floor(Math.random()*C.state.videos.length);
+
+let v=C.state.videos[C.state.currentIndex];let attempts=0;const maxAttempts=C.state.videos.length;
+while(isVideoHasError(v)&&attempts<maxAttempts){
+log(`⚠️ ข้ามวิดีโอที่มีปัญหา: ${v.title}`);
+C.state.currentIndex=(C.state.currentIndex+1)%C.state.videos.length;
+v=C.state.videos[C.state.currentIndex];
+attempts++;
+}
+if(attempts>=maxAttempts){
+log('❌ วิดีโอทุกรายการมีปัญหา - หยุดการทำงาน');
+stop();
+alert('ไม่มีวิดีโอที่สามารถเล่นได้\nทุกวิดีโอในรายการมีปัญหา');
+return;
+}
+
+C.state.retryCount=0;
+C.state.currentVideoData=v;
+
+const ap=C.dom.autoplay?.checked?1:0;const mu=C.dom.muted?.checked?1:0;const lp=C.dom.loop?.checked?1:0;const st=parseInt(C.dom.startTime?.value)||0;const pd=(parseInt(C.dom.playDuration?.value)||5)*60*1000;let url='';
+
+if(v.playlistId)url=`https://www.youtube-nocookie.com/embed/videoseries?list=${v.playlistId}&autoplay=${ap}&mute=${mu}&loop=${lp}`;
+else if(v.videoId)url=`https://www.youtube-nocookie.com/embed/${v.videoId}?autoplay=${ap}&mute=${mu}&loop=${lp}&start=${st}`;
+
+const p=C.dom.youtubePlayer;const ph=C.dom.videoPlaceholder;
+if(p&&ph){
+p.src=url;
+p.style.display='block';
+ph.style.display='none';
+p.onload=function(){
+log(`✅ วิดีโอโหลดสำเร็จ: ${v.title}`);
+if(C.timeouts.retry)clearTimeout(C.timeouts.retry);
+C.state.consecutiveErrors=0;
+};
+p.onerror=function(){
+const key=v.videoId||v.playlistId;
+log(`❌ Error โหลดวิดีโอ: ${v.title} - กำลัง retry...`);
+C.state.consecutiveErrors++;
+if(C.timeouts.retry)clearTimeout(C.timeouts.retry);
+retryVideo();
+};
+setupRetryTimer();
+}
+
+C.state.playCounter++;C.state.currentAction='stopping';const now=new Date();
+if(C.dom.currentVideo)C.dom.currentVideo.textContent=`${C.state.currentIndex+1}/${C.state.videos.length}`;
+if(C.dom.playCount)C.dom.playCount.textContent=C.state.playCounter;
+if(C.dom.lastPlay)C.dom.lastPlay.textContent=now.toLocaleTimeString('th-TH');
+if(C.dom.status)C.dom.status.textContent='กำลังเล่น';
+updateVideoList();
+log(`▶️ เล่นที่ ${C.state.currentIndex+1}/${C.state.videos.length}: ${v.title}`);
+log(`⏱️ จะหยุดใน ${pd/60000} นาที`);
+C.state.nextActionTime=now.getTime()+pd;
+const sTime=new Date(C.state.nextActionTime);
+if(C.dom.stopTime)C.dom.stopTime.textContent=sTime.toLocaleTimeString('th-TH');
+if(C.timeouts.stop)clearTimeout(C.timeouts.stop);
+C.timeouts.stop=setTimeout(()=>{
+if(!C.state.isRunning)return;
+stopCurrentVideo();
+if(C.dom.status)C.dom.status.textContent='รอรอบถัดไป';
+log('⏸️ หยุดเล่นวิดีโอ');
+C.state.consecutiveErrors=0;
+scheduleNext();
+},pd);
+}
+
+function start(){if(C.state.videos.length===0){alert('กรุณาเพิ่มวิดีโออย่างน้อย 1 รายการ');return}const pd=parseInt(C.dom.playDuration?.value)||5;const re=C.dom.enableRandomInterval?.checked??false;if(re){const min=parseInt(C.dom.intervalMin?.value)||25;const max=parseInt(C.dom.intervalMax?.value)||35;if(min>=max){alert('ค่าต่ำสุดต้องน้อยกว่าค่าสูงสุด');return}if(pd>=min){alert('ระยะเวลาเล่นต้องน้อยกว่าช่วงเวลาที่สุ่ม');return}}else{const iv=parseInt(C.dom.interval?.value)||30;if(pd>=iv){alert('ระยะเวลาเล่นต้องน้อยกว่ารอบการทำงาน');return}}if(isQuiet()){const ok=confirm('ขณะนี้อยู่ในช่วงเวลาห้ามเล่น คุณต้องการเริ่มเล่นต่อหรือไม่?');if(!ok){log('❌ ยกเลิกการเริ่มเล่น');return}}C.state.isRunning=true;C.state.currentIndex=0;C.state.currentAction=null;C.state.playCounter=0;if(C.timeouts.main)clearTimeout(C.timeouts.main);if(C.timeouts.stop)clearTimeout(C.timeouts.stop);if(C.timeouts.countdown)clearInterval(C.timeouts.countdown);log(`📋 รายการวิดีโอทั้งหมด: ${C.state.videos.length} วิดีโอ`);log(`🎯 เริ่มที่: ${C.state.videos[0].title}`);const qe=C.dom.enableQuietHours?.checked??false;if(qe){const qs=C.dom.quietStart?.value||'22:00';const qen=C.dom.quietEnd?.value||'08:00';log(`🌙 Quiet Hours: ${qs} - ${qen}`)}if(re){const min=parseInt(C.dom.intervalMin?.value)||25;const max=parseInt(C.dom.intervalMax?.value)||35;log(`🎲 สุ่มเวลา: ${min}-${max} นาที`)}save();play();C.timeouts.countdown=setInterval(updateCD,1000);if(C.dom.startBtn)C.dom.startBtn.disabled=true;if(C.dom.stopBtn)C.dom.stopBtn.disabled=false;if(C.dom.urlInput)C.dom.urlInput.disabled=true;if(C.dom.addBtn)C.dom.addBtn.disabled=true;log(`🚀 เริ่มเล่นอัตโนมัติ - เล่น ${pd} นาที`)}
+
+function stop(){C.state.isRunning=false;stopCurrentVideo();if(C.timeouts.main){clearTimeout(C.timeouts.main);C.timeouts.main=null}if(C.timeouts.stop){clearTimeout(C.timeouts.stop);C.timeouts.stop=null}if(C.timeouts.countdown){clearInterval(C.timeouts.countdown);C.timeouts.countdown=null}if(C.timeouts.retry){clearTimeout(C.timeouts.retry);C.timeouts.retry=null}C.state.nextActionTime=null;C.state.currentAction=null;C.state.currentIndex=0;C.state.retryCount=0;C.state.currentVideoData=null;if(C.dom.startBtn)C.dom.startBtn.disabled=false;if(C.dom.stopBtn)C.dom.stopBtn.disabled=true;if(C.dom.urlInput)C.dom.urlInput.disabled=false;if(C.dom.addBtn)C.dom.addBtn.disabled=false;if(C.dom.status)C.dom.status.textContent='ไม่ทำงาน';if(C.dom.currentVideo)C.dom.currentVideo.textContent='-';if(C.dom.stopTime)C.dom.stopTime.textContent='-';if(C.dom.nextPlay)C.dom.nextPlay.textContent='-';if(C.dom.countdown)C.dom.countdown.textContent='⏸️ รอเริ่มการทำงาน...';updateVideoList();log('⏹️ หยุดการทำงาน')}
+
+function test(){if(C.state.videos.length===0){alert('กรุณาเพิ่มวิดีโอก่อนทดสอบ');return}const v=C.state.videos[0];const mu=C.dom.muted?.checked?1:0;const url=v.playlistId?`https://www.youtube-nocookie.com/embed/videoseries?list=${v.playlistId}&autoplay=1&mute=${mu}`:`https://www.youtube-nocookie.com/embed/${v.videoId}?autoplay=1&mute=${mu}`;const p=C.dom.youtubePlayer;const ph=C.dom.videoPlaceholder;if(p&&ph){p.src=url;p.style.display='block';ph.style.display='none'}if(C.dom.status)C.dom.status.textContent='กำลังทดสอบ';if(C.dom.currentVideo)C.dom.currentVideo.textContent=`ทดสอบ: ${v.title}`;log(`🧪 ทดสอบ: ${v.title}`);log('⏱️ จะหยุดใน 10 วินาที...');setTimeout(()=>{stopCurrentVideo();if(C.dom.status)C.dom.status.textContent='ไม่ทำงาน';if(C.dom.currentVideo)C.dom.currentVideo.textContent='-';log('✅ ทดสอบเสร็จสิ้น')},10000)}
+
+function resetErrors(){const confirmed=confirm('🔄 รีเซ็ตระบบทั้งหมด\n\nจะลบข้อมูลทั้งหมดและเริ่มใหม่:\n- ลบรายการวิดีโอทั้งหมด\n- ลบประวัติข้อผิดพลาด\n- รีเซ็ตการตั้งค่า\n\nต้องการดำเนินการต่อหรือไม่?');if(!confirmed)return;log('🔄 กำลังรีเซ็ตระบบ...');localStorage.clear();log('✅ ลบข้อมูลเก่าทั้งหมดแล้ว');C.state.videos=[];C.state.errorVideos={};C.state.consecutiveErrors=0;C.state.currentIndex=0;C.state.playCounter=0;C.state.retryCount=0;C.state.currentVideoData=null;if(C.timeouts.retry)clearTimeout(C.timeouts.retry);updateVideoList();log('✅ รีเซ็ตระบบสำเร็จ - กรุณาเพิ่มวิดีโอใหม่');alert('รีเซ็ตสำเร็จ!\n\nระบบถูกรีเซ็ตเรียบร้อยแล้ว\nกรุณาเพิ่มวิดีโอใหม่อีกครั้ง')}
+
+function setup(){const ch=()=>save();['playDuration','interval','startTime','autoplay','muted','loop','shuffle'].forEach(id=>{const el=C.dom[id];if(el)el.addEventListener('change',ch)});if(C.dom.enableQuietHours)C.dom.enableQuietHours.addEventListener('change',()=>{save();updateQuietStatus()});if(C.dom.quietStart)C.dom.quietStart.addEventListener('change',()=>{save();updateQuietStatus()});if(C.dom.quietEnd)C.dom.quietEnd.addEventListener('change',()=>{save();updateQuietStatus()});if(C.dom.enableRandomInterval)C.dom.enableRandomInterval.addEventListener('change',()=>{save();updateRandomNote();toggleInterval()});if(C.dom.intervalMin)C.dom.intervalMin.addEventListener('change',()=>{save();updateRandomNote()});if(C.dom.intervalMax)C.dom.intervalMax.addEventListener('change',()=>{save();updateRandomNote()});const kh=e=>{if(e.key==='Enter')addVideo()};if(C.dom.urlInput)C.dom.urlInput.addEventListener('keypress',kh);if(C.dom.titleInput)C.dom.titleInput.addEventListener('keypress',kh);if(C.dom.addBtn)C.dom.addBtn.addEventListener('click',addVideo);if(C.dom.startBtn)C.dom.startBtn.addEventListener('click',start);if(C.dom.stopBtn)C.dom.stopBtn.addEventListener('click',stop);if(C.dom.testBtn)C.dom.testBtn.addEventListener('click',test);if(C.dom.resetErrorBtn)C.dom.resetErrorBtn.addEventListener('click',resetErrors);if(C.dom.exportBtn)C.dom.exportBtn.addEventListener('click',exportConfig);if(C.dom.importBtn)C.dom.importBtn.addEventListener('click',()=>C.dom.importFile.click());if(C.dom.importFile)C.dom.importFile.addEventListener('change',e=>{const file=e.target.files[0];if(file)importConfig(file);e.target.value=''})}
+
+function init(){cacheDOM();load();toggleInterval();updateQuietStatus();updateRandomNote();setup();log('✅ ระบบพร้อม - v2.5 Auto Retry Mechanism');log('🔄 ระบบจะลองเล่นซ้ำอัตโนมัติ 3 ครั้งหากวิดีโอไม่เล่น');if(C.dom.videoList&&C.state.videos.length===0)C.dom.videoList.innerHTML='<div style="color:#999;text-align:center;padding:20px">ยังไม่มีวิดีโอในรายการ<br><small>เพิ่มลิงก์ YouTube ด้านบน</small></div>'}
+
+window.addEventListener('beforeunload',e=>{if(C.state.isRunning){e.preventDefault();e.returnValue='มีวิดีโอกำลังเล่นอยู่ คุณแน่ใจหรือไม่ที่จะออก?'}});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+</body>
+</html>
